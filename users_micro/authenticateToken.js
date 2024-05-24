@@ -1,24 +1,24 @@
-import jwt from "jsonwebtoken"
-import dotenv from 'dotenv'
+import jwt from "jsonwebtoken";
+import dotenv from 'dotenv';
+dotenv.config();
+import cookieParser from "cookie-parser";
 
-dotenv.config()
-import cookieParse from 'cookie-parser'
+export default function authenticate(req, res, next) {
+    const token = req.cookies.token; // Retrieve the token from cookies
+    
 
-export default function authenticate(req,res,next){
-    const token=res.cookie.token;
-    console.log(token)
-    if(!token)
-        {
-            res.status(403).send('access denied')
-        }
-    jwt.verify(token,process.env.secret_key,(err,res)=>{
-        if(err)
-            {
-                res.status(403).send('invalid token')
+    if (!token) {
+        return res.json({ error: "Please login" });
+    }
+
+    jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
+        if (err) {
+            if (err.name === 'TokenExpiredError') {
+                return res.status(401).json({ error: "Token expired, please login again" });
+            } else {
+                return res.status(403).json({ error: "Invalid token, please login again" });
             }
-            return res.status(200).send('access granted')
-    })
-
-    next()
-
+        }
+ next(); // Pass control to the next middleware or route handler
+    });
 }

@@ -5,7 +5,6 @@ import express from 'express'
 const app=express()
 app.use(authenticate)
 export function getAllUsers(req,res){
-    console.log("inside here")
     getUsers().then(data=>{
         
         if(data.error)
@@ -29,6 +28,10 @@ export function getPartiuser(req,res){
         if(data.error)
             {
                 res.status(500).json({error:"internal server error"})
+            }
+        if(data.nouser)
+            {
+                res.status(401).json({error:"no such user exits"})
             }
         if(data.result)
             {

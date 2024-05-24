@@ -5,11 +5,15 @@ const app=express();
 // app.use(authenticateToken)
 
 
-export default function user(req,res){
-
-    createTable();
+export default  async function user(req,res){
+    try{
+   await createTable();
     
-    insertUser(req,res);
-
+   await insertUser(req,res);
+    }
+    catch(ex)
+    {
+        res.status(500).json({error:"some internal error"})
+    }
 }
 

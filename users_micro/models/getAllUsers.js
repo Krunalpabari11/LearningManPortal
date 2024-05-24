@@ -28,6 +28,13 @@ export async function getParticularUser(username)
     const user=username.username
     const query=`select * from users where username=?`
    const [value]=await db.query(query,user)
+   if(value.length==0)
+    {
+        const obj={
+            nouser:"no user exits"
+        }
+        return obj
+    }
    const result={
     result:value
    }
